@@ -15,6 +15,15 @@ const app = express();
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// Permissive CORS so the Lovable web app can poll /healthz from the browser.
+app.use((_req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  next();
+});
+app.options("*", (_req, res) => res.sendStatus(204));
+
 app.get("/healthz", (_req, res) => res.json({ ok: true }));
 
 /**
